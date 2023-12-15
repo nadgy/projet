@@ -1,30 +1,16 @@
-# projet
-projet système d'exploitation
+# Youcef Badaoui
 
-On veut effectuer en parallèle(En utilisant le modèle producteurs/consommateur) le produit de deux matrices: 
-B (n1* m1)  et C (n2 * m2) ⇒ la matrice résultante A=B*C ;
+Notes:
+N: is the MAX_SIZE of the buffer and number of consumer threads
 
-Les matrices sont remplis par des valeurs aléatoires
+Q1:
+We use a two-dimensional array to represent the matrices A, B and C.
+and a circular queue to represent the buffer T, (arrays of size N for the intermediate results and their indices.)
 
-Les résultats intermédiaires seront placés dans un tampon de taille “T[N]”.
+Q2:
+Each producer thread must process a distinct section of matrix B and C. Thus, data sharing is done by dividing the tasks.
+We also use semaphores to protect and synchronize access to shared data (result matrix and buffer)
 
-Chaque threads producteurs calcule une ligne de la matrice résultante A et range les résultat dans le tampon T
-
-Les threads consommateurs consomment l'élément T[y]  le place dans la matrice résultante A  au bon emplacement!
-
-q1: Quelles sont les structures de données à utiliser ?
-
-q2: Comment allez-vous protéger l'accès à ces données?
-
-q3- quels sont les risques?
-
-1-Cloner le projet github : projet  ; et le modifier le selon les exigences ci-dessus
-
-2- Pour chaque nouvelle idée créer une nouvelle branche; les autres étudiants peuvent améliorer l'idée en créant une nouvelle branche!
-
-3-Les premières réponses sont mieux notées!
-
-4-Bien gérer les éxceptions 
-
-5-Bien gérer les messages d'erreurs!
-
+Q3:
+The only risk i could have think of in my implemntation is Unpredictable results due to the use of the same buffer by all threads in case an unexpected error or overflow occurs.
+Also possible lack of error handling in case of unexpected errors or inputs.
