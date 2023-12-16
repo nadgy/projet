@@ -1,30 +1,33 @@
-# projet
-projet système d'exploitation
+# Youcef Badaoui
 
-On veut effectuer en parallèle(En utilisant le modèle producteurs/consommateur) le produit de deux matrices: 
-B (n1* m1)  et C (n2 * m2) ⇒ la matrice résultante A=B*C ;
+# Variables:
 
-Les matrices sont remplis par des valeurs aléatoires
+- BUFFER_SIZE: is the size of the buffer, greater than 0 and entered by the user.
+- NUM_CONSUMERS: is the number of consumer threads, greater than 0 and entered by the user.
+- shouldExit: is a boolean variable that indicates whether the consumer threads should exit (when all items are consumed).
 
-Les résultats intermédiaires seront placés dans un tampon de taille “T[N]”.
+# Structures:
 
-Chaque threads producteurs calcule une ligne de la matrice résultante A et range les résultat dans le tampon T
+- BufferItem: is a structure that represents an item in the buffer, it contains the index of the result matrix (i,j) and the value of the result.
+- BufferQueue: is a structure that represents the buffer, it contains the buffer items, the head and tail indices, and the number of items produced and consumed to keep track of the buffer state.
 
-Les threads consommateurs consomment l'élément T[y]  le place dans la matrice résultante A  au bon emplacement!
+# Functions:
 
-q1: Quelles sont les structures de données à utiliser ?
+- insertItem: is a function that inserts an item in the buffer, it takes the value of the result and the index of the result matrix (i,j) as parameters. (Used by the producer threads)
+- removeItem: is a function that removes an item from the buffer, it returns the value of the result and the index of the result matrix (i,j). (Used by the consumer threads)
+- Helper functions: are functions that are used to send helpful debug messages to the console. and generate, print and clear matrices.
 
-q2: Comment allez-vous protéger l'accès à ces données?
+# Q1:
 
-q3- quels sont les risques?
+We use a two-dimensional array to represent the matrices A, B and C.
+and a circular queue to represent the buffer T (BufferQueue and the items inside it as BufferItem).
 
-1-Cloner le projet github : projet  ; et le modifier le selon les exigences ci-dessus
+# Q2:
 
-2- Pour chaque nouvelle idée créer une nouvelle branche; les autres étudiants peuvent améliorer l'idée en créant une nouvelle branche!
+Each producer thread must process a distinct section of matrix B and C. Thus, data sharing is done by dividing the tasks.
+We also use semaphores to protect and synchronize access to shared data (result matrix and buffer) and lock the critical sections.
+And suspend the producer threads when the buffer is full and the consumer threads when the buffer is empty.
 
-3-Les premières réponses sont mieux notées!
+# Q3:
 
-4-Bien gérer les éxceptions 
-
-5-Bien gérer les messages d'erreurs!
-
+Current implementation does not have any predictable risks, because we are using semaphores to carefully protect and synchronize access to shared data (result matrix and buffer) and lock the critical sections.
