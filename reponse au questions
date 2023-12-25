@@ -1,0 +1,19 @@
+Q1: Structures de données à utiliser
+Matrices B, C, et A :
+ des tableaux bidimensionnels pour représenter les matrices B, C et A.
+Tampon T :
+ un tableau unidimensionnel pour représenter le tampon T.
+Synchronisation :
+ sémaphores (sem_t) pour gérer la synchronisation.
+sem_t empty : Pour suivre le nombre de places libres dans le tampon.
+sem_t full : Pour suivre le nombre de places remplies dans le tampon.
+Mutex :
+un verrou (pthread_mutex_t mutex) pour assurer l'exclusion mutuelle lors de l'accès aux données partagées.
+Q2: Comment protéger l'accès à ces données?
+un verrou (pthread_mutex_t mutex) pour encadrer la section critique où les threads manipulent les matrices et le tampon.
+des sémaphores (sem_t empty et sem_t full) pour contrôler l'accès au tampon et gérer la synchronisation entre les producteurs et les consommateurs.
+Q3: Quels sont les risques?
+Risques de conditions de concurrence :
+Des problèmes peuvent survenir si plusieurs threads tentent d'accéder et de modifier les mêmes données simultanément sans synchronisation appropriée.
+Risques de blocage :
+Un mauvais placement de sémaphores peut entraîner des blocages où les threads ne peuvent pas progresser.
