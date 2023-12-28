@@ -25,9 +25,9 @@ Les threads producteur et consommateur sont créés pour effectuer la multiplica
 r1):les structures de données principales à utiliser sont :
 
 - B, C, A : des tableaux dynamiques (alloués dynamiquement à l'aide de malloc) représentent les matrices B, C, et la matrice résultante A. 
-B : Tableau pour stocker les éléments de la matrice B.
-C : Tableau pour stocker les éléments de la matrice C.
-A : Tableau pour stocker les résultats de la multiplication.
+    - B : Tableau pour stocker les éléments de la matrice B.
+    - C : Tableau pour stocker les éléments de la matrice C.
+    - A : Tableau pour stocker les résultats de la multiplication.
 
 - T : Tableau temporaire utilisé comme tampon pour stocker les indices des lignes produites.
 
