@@ -13,9 +13,9 @@ Chaque threads producteurs calcule une ligne de la matrice résultante A et rang
 Les threads consommateurs consomment l'élément T[y]  le place dans la matrice résultante A  au bon emplacement!
 
 q1: Quelles sont les structures de données à utiliser ?
-
+les matric B et C sont initialisées avec des valeurs aléatoires et la matrice A de resultat et le tableau T Tampon pour stocker les résultats intermédiaires.
 q2: Comment allez-vous protéger l'accès à ces données?
-
+les thread producer et consumer et pthread_mutex_t mutex 
 q3- quels sont les risques?
 
 1-Cloner le projet github : projet  ; et le modifier le selon les exigences ci-dessus
