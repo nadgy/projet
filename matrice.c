@@ -1,70 +1,95 @@
 //section include..
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
 
 
 //define
-#define N ... // places dans le buffer
+#define MAX_THREADS 4
+#define N 5
 
 //variable globales 
 //les matrices
-B,C,A
+int B[N][N];
+int C[N][N];
+int A[N][N];
 //le tampon
-T
+int T[N];
+//pour la synchronisation
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-//pour la synchronisation 
-pthread_mutex_t mutex;
-sem_t empty;
-sem_t full;
 
 // Producteur
-void producer(void)
-{
-  int item;
-//pour chaque ligne 
-//for....
-  {
-    item=produce(item);
-    sem_wait(&empty); // attente d'une place libre
+void* producer(void* arg) {
+    int row = *(int*)arg;
+    int result = 0;
+
+    for (int j = 0; j < N; ++j) {
+        result += B[row][j] * C[j][row];
+    }
+
     pthread_mutex_lock(&mutex);
-     // section critique
-     insert_item();
+    T[row] = result;
     pthread_mutex_unlock(&mutex);
-    sem_post(&full); // il y a une place remplie en plus
-  }
+
+    pthread_exit(NULL);
+}
+// consumer
+void* consumer(void* arg) {
+    int col = *(int*)arg;
+    int result = 0;
+
+    for (int i = 0; i < N; ++i) {
+        result += T[i] * B[col][i];
+    }
+
+    A[col / N][col % N] = result;
+
+    pthread_exit(NULL);
 }
 
-void consumer(void)
-{
- int item;
- while(true)
- {
-   sem_wait(&full); // attente d'une place remplie
-   pthread_mutex_lock(&mutex);
-    // section critique
-    item=remove(item);
-   pthread_mutex_unlock(&mutex);
-   sem_post(&empty); // il y a une place libre en plus
- }
-}
+int main() {
+    // Initialiser les matrices B et C avec des valeurs aléatoires
+    srand((unsigned int)time(NULL));
 
-int Main ()
-{
-// Initialisation
-sem_init(&mutex,0,1);//exclusion mutuelle 
-sem_init(&empty, 0 , N);  // buffer vide
-sem_init(&full, 0 , 0);   // buffer vide
-//creation des threads
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            B[i][j] = rand() % 10;  // Valeurs aléatoires entre 0 et 9
+            C[i][j] = rand() % 10;
+        }
+    }
 
+    pthread_t producerThreads[N];
+    pthread_t consumerThreads[N * N];
 
+    for (int i = 0; i < N; ++i) {
+        int* arg = malloc(sizeof(*arg));
+        *arg = i;
+        pthread_create(&producerThreads[i], NULL, producer, arg);
+    }
 
-//attente des threads
+    for (int i = 0; i < N; ++i) {
+        pthread_join(producerThreads[i], NULL);
+    }
 
+    for (int i = 0; i < N * N; ++i) {
+        int* arg = malloc(sizeof(*arg));
+        *arg = i;
+        pthread_create(&consumerThreads[i], NULL, consumer, arg);
+    }
 
+    for (int i = 0; i < N * N; ++i) {
+        pthread_join(consumerThreads[i], NULL);
+    }
 
+    // Afficher la matrice résultante A
+    printf("Matrice résultante A :\n");
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            printf("%d ", A[i][j]);
+        }
+        printf("\n");
+    }
 
-//destruction...
-
-
-
-return 0;
+    return 0;
 }
