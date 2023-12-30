@@ -1,30 +1,25 @@
-# projet
-projet système d'exploitation
-
-On veut effectuer en parallèle(En utilisant le modèle producteurs/consommateur) le produit de deux matrices: 
-B (n1* m1)  et C (n2 * m2) ⇒ la matrice résultante A=B*C ;
-
-Les matrices sont remplis par des valeurs aléatoires
-
-Les résultats intermédiaires seront placés dans un tampon de taille “T[N]”.
-
-Chaque threads producteurs calcule une ligne de la matrice résultante A et range les résultat dans le tampon T
-
-Les threads consommateurs consomment l'élément T[y]  le place dans la matrice résultante A  au bon emplacement!
-
 q1: Quelles sont les structures de données à utiliser ?
+
+Les structures de données utilisées dans le code sont :
+
+- Les pointeurs doubles (**B, **C, **A) pour représenter les matrices B, C, et A. Ce sont des tableaux 2D alloués dynamiquement avec malloc. La taille de ces tableaux dépend des dimensions des matrices.
+- Un tableau double (T[N]) pour représenter le tampon où sont stockés les résultats intermédiaires.
+- Un mutex pthread_mutex_t pour assurer l'exclusion mutuelle lors de l'accès au tampon.
+- Deux sémaphores sem_t (empty, full) pour gérer le tampon.
+- Les tableaux pthread_t (producers[N], consumers[N]) pour stocker les threads producteurs et consommateurs.
 
 q2: Comment allez-vous protéger l'accès à ces données?
 
-q3- quels sont les risques?
+L'accès aux données partagées (le tampon T) est protégé à l'aide d'un mutex et de sémaphores :
 
-1-Cloner le projet github : projet  ; et le modifier le selon les exigences ci-dessus
+- Le mutex assure qu'un seul thread peut accéder au tampon à la fois. Ceci est réalisé en verrouillant le mutex avant qu'un thread n'accède au tampon et en le déverrouillant après que le thread ait fini avec le tampon.
+- Les sémaphores sont utilisés pour gérer le tampon. Le sémaphore 'empty' indique le nombre de places vides dans le tampon et le sémaphore 'full' indique le nombre de places dans le tampon qui sont remplies avec des données. Avant qu'un thread producteur puisse insérer un élément dans le tampon, il décrémente le sémaphore 'empty'. Après avoir inséré l'élément, il incrémente le sémaphore 'full'. De même, avant qu'un thread consommateur puisse retirer un élément du tampon, il décrémente le sémaphore 'full'. Après avoir retiré l'élément, il incrémente le sémaphore 'empty'.
 
-2- Pour chaque nouvelle idée créer une nouvelle branche; les autres étudiants peuvent améliorer l'idée en créant une nouvelle branche!
+q3: Quels sont les risques?
 
-3-Les premières réponses sont mieux notées!
+Les risques associés à ce programme sont principalement liés aux problèmes de concurrence :
 
-4-Bien gérer les éxceptions 
-
-5-Bien gérer les messages d'erreurs!
-
+- Les courses de données : Si le mutex n'est pas correctement utilisé, plusieurs threads pourraient accéder et modifier le tampon simultanément, menant à des résultats incohérents et erronés.
+- Les interblocages : Si le mutex et les sémaphores ne sont pas correctement utilisés, le programme pourrait atteindre un état où chaque thread attend que l'autre libère une ressource, provoquant un blocage indéfini du programme.
+- La famine : Si un thread est continuellement refusé l'accès à une ressource (dans ce cas, le tampon), il pourrait être affamé et incapable de progresser.
+- Les débordements / sous-débordements dans le tampon : Si les sémaphores ne sont pas correctement utilisés, le tampon pourrait déborder (plus d'articles produits que le tampon peut contenir) ou sous-déborder (une tentative de consommer un article lorsque le tampon est vide).
