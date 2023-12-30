@@ -12,7 +12,6 @@ int nextRowToProduce = 0;  // Indice de la prochaine ligne à produire
 int nextRowToConsume = 0;  // Indice de la prochaine ligne à consommer
 int bufferSize;  // Taille du tampon
 
-
 // Sémaphores
 sem_t sem_empty, sem_full, mutex;
 
@@ -25,7 +24,8 @@ void *producer(void *arg) {
         if (nextRowToProduce < n1) {
             currentRow = nextRowToProduce++;
             sem_post(&mutex);
- // Multiplication de la ligne de B par la matrice C
+
+            // Multiplication de la ligne de B par la matrice C
             for (int j = 0; j < m2; ++j) {
                 A[currentRow * m2 + j] = 0;
                 for (int k = 0; k < m1; ++k) {
@@ -34,8 +34,17 @@ void *producer(void *arg) {
             }
 
             sem_wait(&sem_empty);
-            T[currentRow] = currentRow;
+            for (int j = 0; j < m2; ++j) {
+                T[currentRow * m2 + j] = A[currentRow * m2 + j];
+            }
+
             sem_post(&sem_full);
+
+            printf("Producer - Row %d result: ", currentRow);
+            for (int j = 0; j < m2; ++j) {
+                printf("%d ", A[currentRow * m2 + j]);
+            }
+            printf("\n");
         } else {
             sem_post(&mutex);
             break;  // Toutes les lignes ont été produites
@@ -53,12 +62,19 @@ void *consumer(void *arg) {
             int currentRow = nextRowToConsume++;
             sem_post(&mutex);
 
-          // Copie de la ligne depuis le tableau T vers la matrice résultante A
+            // Copie de la ligne depuis le tableau T vers la matrice résultante A
+            sem_wait(&sem_full);
             for (int j = 0; j < m2; ++j) {
-                A[currentRow * m2 + j] = T[currentRow * m2 + j];
+                A[currentRow * m2 + j] += T[currentRow * m2 + j];
             }
 
             sem_post(&sem_empty);
+
+            printf("Consumer - Row %d result: ", currentRow);
+            for (int j = 0; j < m2; ++j) {
+                printf("%d ", A[currentRow * m2 + j]);
+            }
+            printf("\n");
         } else {
             sem_post(&mutex);
             break;  // Toutes les lignes ont été consommées
@@ -67,8 +83,6 @@ void *consumer(void *arg) {
 
     pthread_exit(NULL);
 }
-
-
 int main() {
 
   //entrée les dimensions des matrices B et C
@@ -89,11 +103,15 @@ int main() {
         return 1;
     }
 
+    printf("Entrez la taille du tampon : ");
+    scanf("%d", &bufferSize);
+
     // Allocation dynamique de mémoire pour les matrices
     B = (int *)malloc(n1 * m1 * sizeof(int));
     C = (int *)malloc(n2 * m2 * sizeof(int));
     A = (int *)malloc(n1 * m2 * sizeof(int));
-    T = (int *)malloc(n1 * sizeof(int));
+    T = (int *)malloc(n1 * bufferSize * sizeof(int));
+
 
     /// Initialiser la matrice B avec des valeurs aléatoires
     printf("Matrice B :\n");
@@ -114,10 +132,6 @@ int main() {
         }
         printf("\n");
     }
-
-  // Entrée de la taille du tampon
-    printf("Entrez la taille du tampon : ");
-    scanf("%d", &bufferSize);
 
 
     // Initialisation des sémaphores
