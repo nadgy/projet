@@ -1,70 +1,102 @@
-//section include..
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
 
+#define MAX_SIZE 10
+#define MAX_THREADS 10
+#define N 100
 
+int B[MAX_SIZE][MAX_SIZE], C[MAX_SIZE][MAX_SIZE];
+int n1, m1, n2, m2;
+int T[N];
+int A[MAX_SIZE][MAX_SIZE];
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-//define
-#define N ... // places dans le buffer
+void *producer(void *arg) {
+    int row = *((int *)arg);
 
-//variable globales 
-//les matrices
-B,C,A
-//le tampon
-T
+    for (int j = 0; j < m2; j++) {
+        T[row * m2 + j] = 0;
+        for (int k = 0; k < m1; k++) {
+            T[row * m2 + j] += B[row][k] * C[k][j];
+        }
+    }
 
-//pour la synchronisation 
-pthread_mutex_t mutex;
-sem_t empty;
-sem_t full;
+    pthread_exit(NULL);
+}
 
-// Producteur
-void producer(void)
-{
-  int item;
-//pour chaque ligne 
-//for....
-  {
-    item=produce(item);
-    sem_wait(&empty); // attente d'une place libre
+void *consumer(void *arg) {
+    int index = *((int *)arg);
+    int row = index / m2;
+    int col = index % m2;
+
     pthread_mutex_lock(&mutex);
-     // section critique
-     insert_item();
+    A[row][col] = T[index];
     pthread_mutex_unlock(&mutex);
-    sem_post(&full); // il y a une place remplie en plus
-  }
+
+    pthread_exit(NULL);
 }
 
-void consumer(void)
-{
- int item;
- while(true)
- {
-   sem_wait(&full); // attente d'une place remplie
-   pthread_mutex_lock(&mutex);
-    // section critique
-    item=remove(item);
-   pthread_mutex_unlock(&mutex);
-   sem_post(&empty); // il y a une place libre en plus
- }
+void fill_matrix_random(int matrix[MAX_SIZE][MAX_SIZE], int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            matrix[i][j] = rand() % 10;
+        }
+    }
 }
 
-int Main ()
-{
-// Initialisation
-sem_init(&mutex,0,1);//exclusion mutuelle 
-sem_init(&empty, 0 , N);  // buffer vide
-sem_init(&full, 0 , 0);   // buffer vide
-//creation des threads
+int main() {
+    printf("*********MATRICE B***********\n");
+    printf("Entrez le nombre de lignes : ");
+    scanf("%d", &n1);
+    printf("Entrez le nombre de colonnes : ");
+    scanf("%d", &m1);
+    system("clear");
+    printf("*********MATRICE C***********\n");
+    printf("Entrez le nombre de lignes : ");
+    scanf("%d", &n2);
+    printf("Entrez le nombre de colonnes : ");
+    scanf("%d", &m2);
+    system("clear");
 
+    if (m1 != n2) {
+        printf("Impossible de faire la multiplication entre ces deux matrices !\n");
+        return 1;
+    }
 
+    fill_matrix_random(B, n1, m1);
+    fill_matrix_random(C, n2, m2);
+    pthread_t producer_threads[MAX_THREADS];
+    pthread_t consumer_threads[N];
+    int producer_arguments[MAX_THREADS];
+    int consumer_arguments[N];
 
-//attente des threads
+    for (int i = 0; i < n1; i++) {
+        producer_arguments[i] = i;
+        pthread_create(&producer_threads[i], NULL, producer, (void *)&producer_arguments[i]);
+    }
 
+    for (int i = 0; i < n1; i++) {
+        pthread_join(producer_threads[i], NULL);
+    }
 
+    for (int i = 0; i < N; i++) {
+        consumer_arguments[i] = i;
+        pthread_create(&consumer_threads[i], NULL, consumer, (void *)&consumer_arguments[i]);
+    }
 
+    for (int i = 0; i < N; i++) {
+        pthread_join(consumer_threads[i], NULL);
+    }
 
-//destruction...
+    printf("Matrice résultante A :\n");
+    for (int i = 0; i < n1; i++) {
+        for (int j = 0; j < m2; j++) {
+            printf("%d ", A[i][j]);
+        }
+        printf("\n");
+    }
 
-
-
-return 0;
+    return 0;
 }
