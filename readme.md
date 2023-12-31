@@ -22,7 +22,7 @@ Interblocage : Risque qu'un ensemble de threads se bloque mutuellement en attend
   # Multiplication de Matrices avec Threads
 Ce programme C réalise la multiplication de matrices en utilisant des threads pour un calcul parallèle efficace. Il suit les étapes suivantes :
 
-## Fonctionnalités du programme :
+##Fonctionnalités du programme :
 Initialisation :
 L'utilisateur est invité à saisir :
 La taille du tampon (BUFFER_SIZE).
