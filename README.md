@@ -1,4 +1,4 @@
-
+Kada Nassim groupe 1
 Réponse : Dans le contexte de votre problème, vous utilisez plusieurs matrices pour représenter les données. Les structures de données principales sont :
 
     Matrices B, C, A : Représentent les matrices que vous manipulez.
