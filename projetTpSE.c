@@ -7,7 +7,6 @@
 #include <sys/time.h>
 //==================define========================================
 #define MAX_SIZE 100 // Maximum size for matrices
-#define BUFFER_SIZE_MAX 100 // Size of the buffer
 //==================variable globales============================= 
 int matrixA[MAX_SIZE][MAX_SIZE];// Resultant matrix
 int matrixB[MAX_SIZE][MAX_SIZE];
@@ -100,7 +99,7 @@ scanf("%d",&rowsB);
 printf("veuillez saisire nombre des colomnes de MatB");
 scanf("%d",&colsB);
 
-
+if((rowsC<=MAX_SIZE && colsC<=MAX_SIZE) && (rowsB<=MAX_SIZE && colsB<=MAX_SIZE) ){
 // Initialize matrices A and B with appropriate dimensions and values
     //remplissage des matrice C et B:
 for (i = 0; i < rowsC; i++){
@@ -131,7 +130,11 @@ for(i = 0; i < rowsB; i++){
     printf ("\n");
 }
 
-
+}
+else{
+   printf("les dimension de matrice doit etre <= 100");
+    exit(EXIT_FAILURE);	
+}
 if(colsC!=rowsB){
     printf("vous ne pouvez pas fair la Multiplication de ces deux Matrice!");
     exit(EXIT_FAILURE);
