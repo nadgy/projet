@@ -1,6 +1,4 @@
-.Aarb    .Leticia     .Sonia
-.Lyna    .Boutemeur   .Saraoui
-         .GROUPE1
+.Aarb lyna   .Leticia Boutemeur     .Sonia Saraoui .GROUPE1
  
 
 Q1:  Structures de données
