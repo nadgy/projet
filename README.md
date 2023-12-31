@@ -14,7 +14,7 @@ Trois variables de type sem_t, qui sont des sémaphores utilisés pour contrôle
 
 Deux tableaux threads_prod et threads_cons de taille N, qui contiennent les identifiants des threads producteurs et consommateurs. Ces tableaux sont utilisés pour créer et joindre les threads en utilisant les fonctions pthread_create et pthread_join.
 
-Trois matrices A, B et C de taille N * N, qui sont utilisées pour stocker les données aléatoires générées par les producteurs, et pour afficher les résultats à la fin du programme.
+Trois matrices B (n1* m1) et C (n2 * m2) ⇒ la matrice résultante A=B*C ; qui sont utilisées pour stocker les données aléatoires générées par les producteurs, et pour afficher les résultats à la fin du programme.
 
 q2: Comment allez-vous protéger l’accès à ces données ?
 
