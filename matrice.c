@@ -137,3 +137,7 @@ int main() {
             printf("%d ", A[i][j]);
         }
         printf("\n");
+    }
+
+    return 0;
+}
