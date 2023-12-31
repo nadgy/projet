@@ -1,4 +1,6 @@
- Réponses aux questions:
+Zeghmiche Dalila
+Ouslimane Hanane
+Réponses aux questions:
 
 q1: Quelles sont les structures de données à utiliser ?
 - Le programme utilise des matrices pour représenter les données, notamment les matrices B, C, et A pour effectuer la multiplication matricielle. Il utilise également un tampon circulaire (tableau de structures Element T) pour la communication entre les threads.
