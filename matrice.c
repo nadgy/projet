@@ -3,7 +3,11 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <time.h>
-
+/*
+Projet Se En groupe :
+    1- Khelif Abdellah
+    2- Sami Allouche
+*/
 #define N1 3
 #define M1 4
 #define N2 4
