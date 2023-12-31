@@ -30,7 +30,6 @@ sem_t empty;
 sem_t full;
 
 
-
 // Fonction pour imprimer les matrices
 void printMatrix(int rows, int cols, int matrix[MAX][MAX]);
 // Producteur
