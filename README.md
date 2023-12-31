@@ -1,30 +1,20 @@
-# projet
-projet système d'exploitation
+* Authors:  Ouslimane Hanane, Zeghmiche Dalila
+ 
 
-On veut effectuer en parallèle(En utilisant le modèle producteurs/consommateur) le produit de deux matrices: 
-B (n1* m1)  et C (n2 * m2) ⇒ la matrice résultante A=B*C ;
 
-Les matrices sont remplis par des valeurs aléatoires
 
-Les résultats intermédiaires seront placés dans un tampon de taille “T[N]”.
 
-Chaque threads producteurs calcule une ligne de la matrice résultante A et range les résultat dans le tampon T
+**Quelles sont les structures de données à utiliser ?
 
-Les threads consommateurs consomment l'élément T[y]  le place dans la matrice résultante A  au bon emplacement!
+Pour ce problème, les structures de données à utiliser sont les suivantes :
 
-q1: Quelles sont les structures de données à utiliser ?
+Matrices B, C et A : Elles peuvent être représentées par des tableaux à deux dimensions, c'est-à-dire des tableaux de tableaux en langage C. Par exemple, int B[MAX_SIZE][MAX_SIZE].
+Tampon (Buffer) :Il peut être représenté par un tableau unidimensionnel, par exemple int T[BUFFER_SIZE], un tableau pour stocker les résultats intermédiaires produits par les threads producteurs.
+**Comment allez-vous protéger l'accès à ces données ?
 
-q2: Comment allez-vous protéger l'accès à ces données?
+Pour protéger l'accès à ces données partagées entre les threads, vous pouvez utiliser des sémaphores. Dans le code fourni, les sémaphores emptyet fullsont utilisés pour synchroniser l'accès au tampon T. La sémaphore emptyest utilisée pour indiquer le nombre de places vides dans le tampon, et la sémaphore fullest utilisée pour indiquer le nombre de places remplies. Avant d'écrire dans le tampon, le producteur doit déplacer le sémaphore empty, et après avoir écrit, il doit libérer le sémaphore full. De même, le consommateur doit déplacer le sémaphore fullavant de lire dans le tampon, et libérer le sémaphore emptyaprès avoir lu.
 
-q3- quels sont les risques?
+**Quels sont les risques ?
 
-1-Cloner le projet github : projet  ; et le modifier le selon les exigences ci-dessus
-
-2- Pour chaque nouvelle idée créer une nouvelle branche; les autres étudiants peuvent améliorer l'idée en créant une nouvelle branche!
-
-3-Les premières réponses sont mieux notées!
-
-4-Bien gérer les éxceptions 
-
-5-Bien gérer les messages d'erreurs!
+Les principaux risques à considérer sont : les conditions de concurrence et les problèmes de synchronisation. Sans une synchronisation adéquate, les threads producteurs et consommateurs pourraient accéder de manière incohérente au tampon, ce qui entraînerait des résultats incorrects. De plus, les problèmes tels que la surcharge du tampon ou les lectures/écritures simultanées doivent être pris en compte pour éviter les erreurs de segmentation ou les résultats incorrects. Les sémaphores sont utilisés pour réduire ces risques en synchronisant l'accès au tampon.
 
