@@ -5,12 +5,16 @@
 #include <time.h>
 #include <ctype.h> // Inclure le fichier d'en-tête ctype.h
 
-#define N 5 // Définir la taille des matrices
+#define N1 4 // Nombre de lignes de B
+#define M1 3 // Nombre de colonnes de B
+#define N2 5 // Nombre de lignes de C
+#define M2 6 // Nombre de colonnes de C
+#define N (N1 * M1 * N2 * M2) // Taille du tableau T et de la matrice A
 
-int B[N][N];
-int C[N][N];
+int B[N1][M1];
+int C[N2][M2];
 int A[N][N];
-int T[N * N]; // Tableau pour stocker les données produites
+int T[N]; // Tableau pour stocker les données produites
 pthread_mutex_t mutex; // Mutex pour la section critique
 sem_t empty; // Sémaphore pour les cases vides
 sem_t full; // Sémaphore pour les cases pleines
@@ -23,7 +27,7 @@ void insert_item(int item) {
     static int index = 0;
     pthread_mutex_lock(&mutex);
     T[index] = item;
-    index = (index + 1) % (N * N); // Utilisation du modulo pour un tampon circulaire
+    index = (index + 1) % N; // Utilisation du modulo pour un tampon circulaire
     pthread_mutex_unlock(&mutex);
 }
 
@@ -32,7 +36,7 @@ int remove_item() {
     int item;
     pthread_mutex_lock(&mutex);
     item = T[index];
-    index = (index + 1) % (N * N); // Utilisation du modulo pour un tampon circulaire
+    index = (index + 1) % N; // Utilisation du modulo pour un tampon circulaire
     pthread_mutex_unlock(&mutex);
     return item;
 }
@@ -60,17 +64,22 @@ void *consumer(void *arg) {
 }
 
 int main() {
-    sem_init(&empty, 0, N * N); // Initialiser le sémaphore empty à la taille maximale du tampon
+    sem_init(&empty, 0, N); // Initialiser le sémaphore empty à la taille maximale du tampon
     sem_init(&full, 0, 0); // Initialiser le sémaphore full à 0
     pthread_mutex_init(&mutex, NULL); // Initialiser le mutex
     srand(time(NULL));
 
-    // Initialiser les matrices B et C aléatoirement
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+    // Initialiser la matrice B aléatoirement
+    for (int i = 0; i < N1; i++) {
+        for (int j = 0; j < M1; j++) {
             B[i][j] = rand() % 10;
+        }
+    }
+
+    // Initialiser la matrice C aléatoirement
+    for (int i = 0; i < N2; i++) {
+        for (int j = 0; j < M2; j++) {
             C[i][j] = rand() % 10;
-            A[i][j] = 0;
         }
     }
 
@@ -107,16 +116,16 @@ int main() {
 
     // Affichage des matrices B, C et A
     printf("Matrice B :\n");
-    for (i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+    for (i = 0; i < N1; i++) {
+        for (int j = 0; j < M1; j++) {
             printf("%d ", B[i][j]);
         }
         printf("\n");
     }
 
     printf("\nMatrice C :\n");
-    for (i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+    for (i = 0; i < N2; i++) {
+        for (int j = 0; j < M2; j++) {
             printf("%d ", C[i][j]);
         }
         printf("\n");
@@ -128,7 +137,3 @@ int main() {
             printf("%d ", A[i][j]);
         }
         printf("\n");
-    }
-
-    return 0;
-}
