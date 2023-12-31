@@ -1,30 +1,13 @@
-# projet
-projet système d'exploitation
 
-On veut effectuer en parallèle(En utilisant le modèle producteurs/consommateur) le produit de deux matrices: 
-B (n1* m1)  et C (n2 * m2) ⇒ la matrice résultante A=B*C ;
 
-Les matrices sont remplis par des valeurs aléatoires
+Markup :  ### q1: Quelles sont les structures de données à utiliser ? ###
+Les structures de données utilisées dans ce programme sont principalement des tableaux à deux dimensions (B, C, A) pour représenter les matrices et le tampon T est implémenté comme un tableau unidimensionnel simulant une structure à deux dimensions.
 
-Les résultats intermédiaires seront placés dans un tampon de taille “T[N]”.
 
-Chaque threads producteurs calcule une ligne de la matrice résultante A et range les résultat dans le tampon T
+Markup :  ### q2: Comment allez-vous protéger l'accès à ces données? ###
+L'accès aux données est protégé par un mutex (pthread_mutex_t mutex) qui assure l'exclusion mutuelle lors de l'accès aux structures de données partagées (T, A) Et deux sémaphores ( full et empty) sont utilisés pour la synchronisation entre les producteurs et les consommateurs, contrôlant l'accès aux emplacements vides et pleins du tampon.
 
-Les threads consommateurs consomment l'élément T[y]  le place dans la matrice résultante A  au bon emplacement!
 
-q1: Quelles sont les structures de données à utiliser ?
-
-q2: Comment allez-vous protéger l'accès à ces données?
-
-q3- quels sont les risques?
-
-1-Cloner le projet github : projet  ; et le modifier le selon les exigences ci-dessus
-
-2- Pour chaque nouvelle idée créer une nouvelle branche; les autres étudiants peuvent améliorer l'idée en créant une nouvelle branche!
-
-3-Les premières réponses sont mieux notées!
-
-4-Bien gérer les éxceptions 
-
-5-Bien gérer les messages d'erreurs!
-
+Markup :  ### q3: quels sont les risques? ###
+Les risques potentiels comprennent les conditions de concurrence si l'accès aux données n'est pas correctement synchronisé. 
+Il y a le risque de blocage si le tampon est plein et aucun consommateur n'est disponible pour libérer de l'espace ou vice versa.
