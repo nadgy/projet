@@ -1,30 +1,55 @@
-# projet
-projet système d'exploitation
+# ProjetTpSE
 
-On veut effectuer en parallèle(En utilisant le modèle producteurs/consommateur) le produit de deux matrices: 
-B (n1* m1)  et C (n2 * m2) ⇒ la matrice résultante A=B*C ;
+# Ce projet, réalisé en collaboration avec SERIDJ YOUGURTHA.
 
-Les matrices sont remplis par des valeurs aléatoires
+Ce qui concerne les questions voici les réponse :
 
-Les résultats intermédiaires seront placés dans un tampon de taille “T[N]”.
+## Q1/Structures de Données Utilisées
 
-Chaque threads producteurs calcule une ligne de la matrice résultante A et range les résultat dans le tampon T
+  `BufferItem` : Structure représentant un élément du tampon pour les résultats intermédiaires.
+   Matrices `matrixA`, `matrixB`, `matrixC` et variables de dimensionnement `rowsC`, `colsC`, `rowsB`, `colsB`.
 
-Les threads consommateurs consomment l'élément T[y]  le place dans la matrice résultante A  au bon emplacement!
 
-q1: Quelles sont les structures de données à utiliser ?
+## Q2/Protection de l'Accès aux Données
 
-q2: Comment allez-vous protéger l'accès à ces données?
+Pour assurer l'intégrité des données partagées entre les threads, les mécanismes suivants sont utilisés :
+ **Sémaphores** : `empty`, `full`, `mutex` pour synchroniser et contrôler l'accès aux données partagées.
+   `empty` : Gère l'espace vide dans le tampon.
+   `full` : Gère l'espace occupé dans le tampon.
+   `mutex` : Assure un accès exclusif au tampon.
 
-q3- quels sont les risques?
+## Q3/Risques Mitigés
 
-1-Cloner le projet github : projet  ; et le modifier le selon les exigences ci-dessus
+ **Concurrence** : Risque d'accès simultané aux données partagées par plusieurs threads.
+ **Interblocage** : Risque qu'un ensemble de threads se bloque mutuellement.
 
-2- Pour chaque nouvelle idée créer une nouvelle branche; les autres étudiants peuvent améliorer l'idée en créant une nouvelle branche!
 
-3-Les premières réponses sont mieux notées!
+## Fonctionnalités du Programme
 
-4-Bien gérer les éxceptions 
+Le programme comprend les éléments suivants :
 
-5-Bien gérer les messages d'erreurs!
+### Structures et Variables Globales
 
+ `BufferItem` : Structure représentant un élément du tampon pour les résultats intermédiaires.
+ Matrices `matrixA`, `matrixB`, `matrixC` et variables de dimensionnement `rowsC`, `colsC`, `rowsB`, `colsB`.
+ Indices `indexSuivInserez`, `indexSuivEnlevez`, `BUFFER_SIZE` pour gérer le tampon.
+ Sémaphores et mutex pour la synchronisation.
+ Tampon `buffer` pour stocker les résultats intermédiaires.
+
+### Fonctions
+
+ `insert_item` : Insère un élément dans le tampon avec les informations sur le résultat intermédiaire.
+ `remove_item` : Récupère les éléments du tampon pour les placer dans la matrice de résultat finale.
+ `producer` : Calcul des produits partiels des matrices.
+ `consumer` : Récupération des produits partiels et placement dans la matrice résultante finale.
+
+### Fonction Principale (Main)
+
+ Demande à l'utilisateur les dimensions des matrices C et B.
+ Initialise les matrices avec des valeurs aléatoires.
+ Crée les sémaphores et le mutex, alloue la mémoire pour le tampon.
+ Utilise des threads pour calculer les produits partiels et les placer dans le tampon.
+ Attend la fin des threads et affiche la matrice résultante C.
+ Détruit les sémaphores, le mutex et libère la mémoire allouée pour le tampon.
+
+Le programme utilise la synchronisation entre threads pour éviter les conflits d'accès et permettre le calcul parallèle des produits partiels de la multiplication de matrices.
