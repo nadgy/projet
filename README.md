@@ -3,18 +3,14 @@ AIMIM
 GROUPE 1
 
 
-QUESTION1: Structures de données :
-
+Reponse1: 
 Matrices B, C, A : Tableaux bidimensionnels.
 Tampon T : Tableau ou file.
 
-QUESTION2: Protection de l'accès :
-
+Reponse2:
 Utilisation de verrous (mutex) pour le tampon T.
 Utilisation de sémaphores pour gérer la capacité du tampon.
 
-
-QUESTION3: Risques :
-
+Reponse3: 
 Conditions de concurrence entre threads producteurs et consommateurs.
 Risque de débordement du tampon si sa capacité n'est pas suffisante.   
