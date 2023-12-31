@@ -1,28 +1,28 @@
 # Projet.SE  
                      
 
-#Q1/Structures de données utilisées :
+# Q1/Structures de données utilisées :
 
 Matrices (B, C, A) : Utilisées pour stocker les données des matrices B, C et la matrice résultante A.
 Tampon (buffer) : Partagé entre les threads producteurs et consommateurs pour stocker les résultats intermédiaires de la multiplication de matrices.
 
-#Q2/Protection de l'accès aux données :
+# Q2/Protection de l'accès aux données :
 Utilisation de sémaphores pour synchroniser l'accès aux données partagées entre les threads :
 empty : Gère la quantité d'espace vide dans le tampon qui stocke les résultats intermédiaires.
 full : Gère la quantité d'espace occupé dans le tampon.
 mutex : Assure un accès exclusif au tampon partagé entre les threads.
 
-#Q3/Risques potentiels :
+# Q3/Risques potentiels :
 
 Concurrence : Risque d'accès simultané aux données partagées par plusieurs threads, pouvant entraîner des incohérences ou des résultats erronés.
 Interblocage : Risque qu'un ensemble de threads se bloque mutuellement en attendant des ressources ou en verrouillant des ressources de manière cyclique.
 
 
 
-  #Multiplication de Matrices avec Threads
+  # Multiplication de Matrices avec Threads
 Ce programme C réalise la multiplication de matrices en utilisant des threads pour un calcul parallèle efficace. Il suit les étapes suivantes :
 
-##Fonctionnalités du programme :
+## Fonctionnalités du programme :
 Initialisation :
 L'utilisateur est invité à saisir :
 La taille du tampon (BUFFER_SIZE).
