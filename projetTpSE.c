@@ -5,7 +5,6 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <sys/time.h>
-#include <stdbool.h>
 //==================define========================================
 #define MAX_SIZE 100 // Maximum size for matrices
 #define BUFFER_SIZE_MAX 100 // Size of the buffer
