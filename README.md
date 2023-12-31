@@ -1,30 +1,8 @@
-# projet
-projet système d'exploitation
 
-On veut effectuer en parallèle(En utilisant le modèle producteurs/consommateur) le produit de deux matrices: 
-B (n1* m1)  et C (n2 * m2) ⇒ la matrice résultante A=B*C ;
+Réponse : Dans le contexte de votre problème, vous utilisez plusieurs matrices pour représenter les données. Les structures de données principales sont :
 
-Les matrices sont remplis par des valeurs aléatoires
+    Matrices B, C, A : Représentent les matrices que vous manipulez.
+    Tampon T : Utilisé pour stocker les résultats intermédiaires pendant la multiplication.
+Réponse : Vous utilisez un verrou (mutex) pour protéger l'accès concurrent aux données partagées. En particulier, le mutex entoure la section critique où les threads écrivent dans la matrice résultante A à partir du tampon T. Cela garantit que chaque thread attend son tour pour accéder à cette section critique, évitant ainsi des accès concurrents indésirables.
 
-Les résultats intermédiaires seront placés dans un tampon de taille “T[N]”.
-
-Chaque threads producteurs calcule une ligne de la matrice résultante A et range les résultat dans le tampon T
-
-Les threads consommateurs consomment l'élément T[y]  le place dans la matrice résultante A  au bon emplacement!
-
-q1: Quelles sont les structures de données à utiliser ?
-
-q2: Comment allez-vous protéger l'accès à ces données?
-
-q3- quels sont les risques?
-
-1-Cloner le projet github : projet  ; et le modifier le selon les exigences ci-dessus
-
-2- Pour chaque nouvelle idée créer une nouvelle branche; les autres étudiants peuvent améliorer l'idée en créant une nouvelle branche!
-
-3-Les premières réponses sont mieux notées!
-
-4-Bien gérer les éxceptions 
-
-5-Bien gérer les messages d'erreurs!
-
+Problèmes de performances : L'utilisation excessive de verrous peut entraîner des problèmes de performances, car cela limite le parallélisme des threads. Trouver le bon équilibre entre la protection des données partagées et l'exploitation du parallélisme est crucial.
