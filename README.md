@@ -1,3 +1,9 @@
+* Authors:  Ouslimane Hanane, Zeghmiche Dalila
+ 
+
+
+
+
 **Quelles sont les structures de données à utiliser ?
 
 Pour ce problème, les structures de données à utiliser sont les suivantes :
