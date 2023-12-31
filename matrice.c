@@ -1,70 +1,234 @@
-//section include..
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <time.h>
 
+#define MAX_ROWS 10
+#define MAX_COLUMNS 10
+#define N 10  // Size of the buffer
+#define MAX_THREADS 10
 
+// Node structure for the linked list
+struct Node
+{
+    int data;
+    int row;
+    struct Node *next;
+};
 
-//define
-#define N ... // places dans le buffer
+// Global variables
+int n1 = MAX_ROWS, n2 = MAX_ROWS, m1 = MAX_COLUMNS, m2 = MAX_COLUMNS;
 
-//variable globales 
-//les matrices
-B,C,A
-//le tampon
-T
+// Matrices
+int B[MAX_ROWS][MAX_COLUMNS], C[MAX_ROWS][MAX_COLUMNS], A[MAX_ROWS][MAX_COLUMNS];
 
-//pour la synchronisation 
+// Buffer
+struct Node *head = NULL;
+struct Node *tail = NULL;
+
+// For synchronization
 pthread_mutex_t mutex;
 sem_t empty;
 sem_t full;
 
-// Producteur
-void producer(void)
+// Function to check if the buffer is empty
+int is_empty()
 {
-  int item;
-//pour chaque ligne 
-//for....
-  {
-    item=produce(item);
-    sem_wait(&empty); // attente d'une place libre
+    return head == NULL;
+}
+
+// Function to check if the buffer is full
+int is_full()
+{
+    // Assuming N is the maximum size of the buffer
+    return count_elements_in_buffer() >= N;
+}
+
+// Function to count the number of elements in the buffer
+int count_elements_in_buffer()
+{
+    int count = 0;
+    struct Node *current = head;
+
+    while (current != NULL)
+    {
+        count++;
+        current = current->next;
+    }
+
+    return count;
+}
+
+// Function to insert an item into the buffer
+void insert_item(int item, int row)
+{
+    struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
+    new_node->data = item;
+    new_node->row = row;
+    new_node->next = NULL;
+
+    if (is_empty())
+    {
+        head = new_node;
+        tail = new_node;
+    }
+    else
+    {
+        tail->next = new_node;
+        tail = new_node;
+    }
+}
+
+// Function to remove an item from the buffer
+void remove_item(int *item, int *row)
+{
+    if (!is_empty())
+    {
+        struct Node *temp = head;
+        *item = temp->data;
+        *row = temp->row;
+        head = temp->next;
+
+        free(temp);
+    }
+}
+
+void initialize_matrices()
+{
+    srand(time(NULL)); // Seed for random number generation
+
+    for (int i = 0; i < n1; ++i)
+    {
+        for (int j = 0; j < m1; ++j)
+        {
+            B[i][j] = rand() % 10;
+        }
+    }
+
+    for (int i = 0; i < n2; ++i)
+    {
+        for (int j = 0; j < m2; ++j)
+        {
+            C[i][j] = rand() % 10;
+        }
+    }
+}
+
+
+void multiplyMatrices(int B[MAX_ROWS][MAX_COLUMNS], int C[MAX_ROWS][MAX_COLUMNS], int result[MAX_ROWS][MAX_COLUMNS]) {
+    for (int i = 0; i < n1; ++i) {
+        for (int j = 0; j < m1; ++j) {
+            result[i][j] = 0;
+            for (int k = 0; k < n2; ++k) {
+                result[i][j] += B[i][k] * C[k][j];
+            }
+        }
+    }
+}
+
+
+
+// producer function
+void *producer(void *arg) {
+    sem_wait(&empty);
     pthread_mutex_lock(&mutex);
-     // section critique
-     insert_item();
+
+    multiplyMatrices(B, C, A);
+
     pthread_mutex_unlock(&mutex);
-    sem_post(&full); // il y a une place remplie en plus
-  }
+    sem_post(&full);
+    pthread_exit(NULL);
 }
 
-void consumer(void)
+// Function to consume the item and row
+void consume(int item, int row)
 {
- int item;
- while(true)
- {
-   sem_wait(&full); // attente d'une place remplie
-   pthread_mutex_lock(&mutex);
-    // section critique
-    item=remove(item);
-   pthread_mutex_unlock(&mutex);
-   sem_post(&empty); // il y a une place libre en plus
- }
+    for (int j = 0; j < m1; ++j)
+    {
+        A[row][j] = item;
+    }
 }
 
-int Main ()
+// Consumer
+void *consumer(void *arg)
 {
-// Initialisation
-sem_init(&mutex,0,1);//exclusion mutuelle 
-sem_init(&empty, 0 , N);  // buffer vide
-sem_init(&full, 0 , 0);   // buffer vide
-//creation des threads
+    int item, row;
+    while (1) // Run continuously
+    {
+        sem_wait(&full);
+        pthread_mutex_lock(&mutex);
+        if (is_empty()) // Check if the buffer is empty
+        {
+            pthread_mutex_unlock(&mutex);
+            sem_post(&empty);
+            break; // Exit the loop if the buffer is empty
+        }
+        remove_item(&item, &row);
+        pthread_mutex_unlock(&mutex);
+        sem_post(&empty);
+        consume(item, row);
+    }
+}
 
+int main()
+{
+    // Initialize matrices B and C, set n1, n2, m1, m2 values
+    initialize_matrices();
+    // Print Matrix B
+    printf("Matrix B:\n");
+    for (int i = 0; i < n1; ++i)
+    {
+        for (int j = 0; j < m1; ++j)
+        {
+            printf("%d ", B[i][j]);
+        }
+        printf("\n");
+    }
 
+    // Print Matrix C
+    printf("Matrix C:\n");
+    for (int i = 0; i < n2; ++i)
+    {
+        for (int j = 0; j < m2; ++j)
+        {
+            printf("%d ", C[i][j]);
+        }
+        printf("\n");
+    }
 
-//attente des threads
+    // Initialize mutex and semaphores
+    pthread_mutex_init(&mutex, NULL);
+    sem_init(&empty, 0, N);
+    sem_init(&full, 0, 0);
 
+    // Create producer and consumer threads
+    pthread_t producer_thread, consumer_thread;
 
+    // Add code to set n1, n2, m1, m2 values and initialize matrices B and C
 
+    pthread_create(&producer_thread, NULL, producer, NULL);
+    pthread_create(&consumer_thread, NULL, consumer, NULL);
 
-//destruction...
+    // Join threads
+    pthread_join(producer_thread, NULL);
+    pthread_join(consumer_thread, NULL);
 
+    // Print the resulting matrix A
+    printf("Resulting Matrix A:\n");
+    for (int i = 0; i < n1; ++i)
+    {
+        for (int j = 0; j < m1; ++j)
+        {
+            printf("%d ", A[i][j]);
+        }
+        printf("\n");
+    }
 
+    // Cleanup
+    pthread_mutex_destroy(&mutex);
+    sem_destroy(&empty);
+    sem_destroy(&full);
 
-return 0;
+    return 0;
 }
