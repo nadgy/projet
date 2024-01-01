@@ -1,3 +1,4 @@
+
                   " Ce projet a été réalisé en collaboration avec ZIOUI Lounes  "
 Ce qui concerne les questions voici les réponse :
 
@@ -16,5 +17,4 @@ Q3: Quels sont les risques?
 
    Concurrence : Risque d'accès simultané aux données partagées par plusieurs threads    
    interblocage : Risque qu'un ensemble de threads se bloque mutuellement
-
 
