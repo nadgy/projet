@@ -15,4 +15,3 @@ mutex : Assure un accès exclusif au tampon partagé entre les threads
 3: Quels sont les risques?
 
 Concurrence : Risque d'accès simultané aux données partagées par plusieurs threads    
-interblocage : Risque qu'un ensemble de threads se bloque mutuellement
