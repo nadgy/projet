@@ -1,0 +1,33 @@
+void sauvegarderMatrice(int matrice[MAX_SIZE][MAX_SIZE], const char *nomFichier) {
+    FILE *fichier = fopen(nomFichier, "w");
+    if (fichier == NULL) {
+        fprintf(stderr, "erreur lors de l'ouverture du fichier pour la sauvegarde");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < n1; i++) {
+        for (int j = 0; j < m1; j++) {
+            fprintf(fichier, "%d ", matrice[i][j]);
+        }
+        fprintf(fichier, "\n");
+    }
+
+    fclose(fichier);
+}
+
+void chargerMatrice(int matrice[MAX_SIZE][MAX_SIZE], const char *nomFichier) {
+    FILE *fichier = fopen(nomFichier, "r");
+    if (fichier == NULL) {
+        fprintf(stderr, "erreur lors de l'ouverture du fichier pour le chargement");
+        exit(EXIT_FAILURE);
+    }
+
+
+
+sauvegarderMatrice :
+Sauvegarde une matrice dans un fichier en écrivant chaque élément séparé par un espace.
+Chaque ligne de la matrice est écrite sur une nouvelle ligne dans le fichier.
+
+chargerMatrice :
+Charge une matrice depuis un fichier en lisant les éléments du fichier.
+Chaque ligne du fichier correspond à une ligne de la matrice.
